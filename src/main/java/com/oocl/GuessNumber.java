@@ -1,5 +1,8 @@
 package com.oocl;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
 public class GuessNumber {
@@ -8,6 +11,8 @@ public class GuessNumber {
     final int maxGuessTrialCount = 6;
     final int answerLength = 4;
     private int guessTrialCount;
+    final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
     public GuessNumber() {
         String answerString = getRandomAnswerString();
         putAnswerInMap(answerString);
@@ -24,8 +29,7 @@ public class GuessNumber {
 
     private String getRandomAnswerString() {
         String answerString = "0000";
-        while (!isInputValid(answerString))
-        {
+        while (!isInputValid(answerString)) {
             Random random = new Random();
             answerString = String.format("%04d", random.nextInt(maxNumber));
         }
@@ -69,16 +73,14 @@ public class GuessNumber {
     }
 
     public int isNumberCorrectAndInPlace(Character character, int index) {
-        if (answer.get(character) == index)
-        {
+        if (answer.get(character) == index) {
             return 1;
         }
         return 0;
     }
 
     public int isNumberCorrectButNotInPlace(Character character, int index) {
-        if (answer.get(character) != index)
-        {
+        if (answer.get(character) != index) {
             return 1;
         }
         return 0;
@@ -86,9 +88,6 @@ public class GuessNumber {
 
     public String guess(String input) {
         if (isInputValid(input)) {
-            if (guessTrialCount == maxGuessTrialCount) {
-                return "Game Over";
-            }
             int correctNumberAndInPlace = 0;
             int correctNumber = 0;
             for (int index = 0; index < answerLength; index++) {
@@ -103,6 +102,32 @@ public class GuessNumber {
             return String.format("%dA%dB", correctNumberAndInPlace, correctNumber);
         } else {
             return "Wrong Input, Input again";
+        }
+    }
+
+    public boolean isWin(String result) {
+        return result.equals("4A0B");
+    }
+
+    public boolean isGameOver() {
+        return guessTrialCount == maxGuessTrialCount;
+    }
+
+    public void startGame() throws IOException {
+        System.out.println("Welcome to Guess Number!");
+        System.out.println("Game Start!");
+        String result = "0A0B";
+        while (!isWin(result) && !isGameOver()) {
+            String prompt = String.format("You got %d chance(s) to guess: ", maxGuessTrialCount - guessTrialCount);
+            System.out.print(prompt);
+            result = guess(reader.readLine());
+            System.out.println(result);
+        }
+
+        if (isWin(result)) {
+            System.out.println("Congratulation! You win!");
+        } else if (isGameOver()) {
+            System.out.println("Game Over!");
         }
     }
 }

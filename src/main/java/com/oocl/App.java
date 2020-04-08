@@ -1,13 +1,11 @@
 package com.oocl;
 
-/**
- * Hello world!
- *
- */
-public class App 
-{
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
+import java.io.*;
+
+public class App {
+    public static void main(String[] args) throws IOException {
+        GuessNumber guessNumber = new GuessNumber();
+
+        guessNumber.startGame();
     }
 }
