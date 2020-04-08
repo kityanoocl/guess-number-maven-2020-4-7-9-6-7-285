@@ -32,4 +32,20 @@ public class GuessNumber {
         }
         return answerString;
     }
+
+    public String guess(String input) {
+        int correctNumberAndPlace = 0;
+        int correctNumber = 0;
+        for (int index = 0; index < answerLength; index++) {
+            Character character = new Character(input.charAt(index));
+            if (answer.containsKey(character)) {
+                if (answer.get(character).intValue() == index) {
+                    correctNumberAndPlace++;
+                } else {
+                    correctNumber++;
+                }
+            }
+        }
+        return String.format("%dA%dB", correctNumberAndPlace, correctNumber);
+    }
 }
