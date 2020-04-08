@@ -15,8 +15,7 @@ public class GuessNumber {
     }
 
     public GuessNumber(String answerString) {
-        if (!isInputValid(answerString))
-        {
+        if (!isInputValid(answerString)) {
             answerString = getRandomAnswerString();
         }
         putAnswerInMap(answerString);
@@ -36,7 +35,7 @@ public class GuessNumber {
     private void putAnswerInMap(String answerString) {
         answer = new HashMap<Character, Integer>();
         for (int index = 0; index < answerLength; index++) {
-            answer.put(new Character(answerString.charAt(index)), new Integer(index));
+            answer.put(answerString.charAt(index), index);
         }
     }
 
@@ -48,56 +47,46 @@ public class GuessNumber {
         return answerString;
     }
 
-    public boolean isInputContainsNonInteger(String input) {
-        for (int index = 0; index < answerLength; index++) {
-            if (input.charAt(index) < '0' || input.charAt(index) > '9') {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public boolean isInputHasDuplicate(String input) {
+    public boolean isInputContainsNonIntegerOrDuplicate(String input) {
         List<Character> characterList = new ArrayList<Character>();
         for (int index = 0; index < answerLength; index++) {
-            if (characterList.contains(input.charAt(index))) {
+            if (input.charAt(index) < '0' || input.charAt(index) > '9' || characterList.contains(input.charAt(index))) {
                 return true;
             }
             characterList.add(input.charAt(index));
         }
+
         return false;
     }
 
+
     public boolean isInputValid(String input) {
-        if (input.length() != answerLength || isInputContainsNonInteger(input) || isInputHasDuplicate(input)) {
-            return false;
-        }
-        return true;
+        return input.length() == answerLength && !isInputContainsNonIntegerOrDuplicate(input);
     }
 
     public String guess(String input) {
-        if (!isInputValid(input)) {
-            return String.format("Wrong Input, Input again");
-        }
-        if (guessTrialCount == maxGuessTrialCount) {
-            return String.format("Game Over");
-        }
-        int correctNumberAndPlace = 0;
-        int correctNumber = 0;
-        for (int index = 0; index < answerLength; index++) {
-            Character character = new Character(input.charAt(index));
-            if (answer.containsKey(character)) {
-                if (answer.get(character).intValue() == index) {
-                    correctNumberAndPlace++;
-                } else {
-                    correctNumber++;
+        if (isInputValid(input)) {
+            if (guessTrialCount == maxGuessTrialCount) {
+                return "Game Over";
+            }
+            int correctNumberAndPlace = 0;
+            int correctNumber = 0;
+            for (int index = 0; index < answerLength; index++) {
+                Character character = input.charAt(index);
+                if (answer.containsKey(character)) {
+                    if (answer.get(character) == index) {
+                        correctNumberAndPlace++;
+                    } else {
+                        correctNumber++;
+                    }
                 }
             }
+            if (correctNumberAndPlace != answerLength) {
+                guessTrialCount++;
+            }
+            return String.format("%dA%dB", correctNumberAndPlace, correctNumber);
+        } else {
+            return "Wrong Input, Input again";
         }
-        if (correctNumberAndPlace != answerLength) {
-            guessTrialCount++;
-        }
-        return String.format("%dA%dB", correctNumberAndPlace, correctNumber);
     }
 }
