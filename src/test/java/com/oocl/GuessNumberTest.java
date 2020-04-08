@@ -44,4 +44,13 @@ public class GuessNumberTest {
         assertThat(result1, is("Wrong Input, Input again"));
         assertThat(result2, is("Wrong Input, Input again"));
     }
+
+    @Test
+    public void should_generate_random_for_answer() {
+        GuessNumber guessNumber = new GuessNumber();
+
+        String answer = guessNumber.getAnswer();
+        boolean result = guessNumber.isInputValid(answer);
+        assertThat(result, is(true));
+    }
 }

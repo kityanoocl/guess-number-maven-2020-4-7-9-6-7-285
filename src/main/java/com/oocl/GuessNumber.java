@@ -8,8 +8,13 @@ public class GuessNumber {
     final int answerLength = 4;
 
     public GuessNumber() {
-        Random random = new Random();
-        String answerString = String.format("%04d", maxNumber);
+        String answerString = "0000";
+
+        while (!isInputValid(answerString))
+        {
+            Random random = new Random();
+            answerString = String.format("%04d", random.nextInt(maxNumber));
+        }
         putAnswerInMap(answerString);
     }
 
@@ -32,36 +37,36 @@ public class GuessNumber {
         return answerString;
     }
 
-    public boolean isUserInputContainsNonInteger(String input) {
+    public boolean isInputContainsNonInteger(String input) {
         for (int index = 0; index < answerLength; index++) {
             if (input.charAt(index) < '0' || input.charAt(index) > '9') {
-                return false;
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 
-    public boolean isUserInputHasDuplicate(String input) {
+    public boolean isInputHasDuplicate(String input) {
         List<Character> characterList = new ArrayList<Character>();
         for (int index = 0; index < answerLength; index++) {
             if (characterList.contains(input.charAt(index))) {
-                return false;
+                return true;
             }
             characterList.add(input.charAt(index));
         }
-        return true;
+        return false;
     }
 
-    public boolean isUserInputValid(String input) {
-        if (input.length() != answerLength || isUserInputContainsNonInteger(input) || isUserInputHasDuplicate(input)) {
+    public boolean isInputValid(String input) {
+        if (input.length() != answerLength || isInputContainsNonInteger(input) || isInputHasDuplicate(input)) {
             return false;
         }
         return true;
     }
 
     public String guess(String input) {
-        if (!isUserInputValid(input)) {
+        if (!isInputValid(input)) {
             return String.format("Wrong Input, Input again");
         }
         int correctNumberAndPlace = 0;
