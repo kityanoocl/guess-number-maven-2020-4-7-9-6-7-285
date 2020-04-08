@@ -5,21 +5,32 @@ import java.util.*;
 public class GuessNumber {
     private HashMap<Character, Integer> answer;
     final int maxNumber = 9999;
+    final int maxGuessTrialCount = 6;
     final int answerLength = 4;
-
+    private int guessTrialCount;
     public GuessNumber() {
-        String answerString = "0000";
+        String answerString = getRandomAnswerString();
+        putAnswerInMap(answerString);
+        this.guessTrialCount = 0;
+    }
 
+    public GuessNumber(String answerString) {
+        if (!isInputValid(answerString))
+        {
+            answerString = getRandomAnswerString();
+        }
+        putAnswerInMap(answerString);
+        this.guessTrialCount = 0;
+    }
+
+    private String getRandomAnswerString() {
+        String answerString = "0000";
         while (!isInputValid(answerString))
         {
             Random random = new Random();
             answerString = String.format("%04d", random.nextInt(maxNumber));
         }
-        putAnswerInMap(answerString);
-    }
-
-    public GuessNumber(String answer) {
-        putAnswerInMap(answer);
+        return answerString;
     }
 
     private void putAnswerInMap(String answerString) {
@@ -69,6 +80,9 @@ public class GuessNumber {
         if (!isInputValid(input)) {
             return String.format("Wrong Input, Input again");
         }
+        if (guessTrialCount == maxGuessTrialCount) {
+            return String.format("Game Over");
+        }
         int correctNumberAndPlace = 0;
         int correctNumber = 0;
         for (int index = 0; index < answerLength; index++) {
@@ -80,6 +94,9 @@ public class GuessNumber {
                     correctNumber++;
                 }
             }
+        }
+        if (correctNumberAndPlace != answerLength) {
+            guessTrialCount++;
         }
         return String.format("%dA%dB", correctNumberAndPlace, correctNumber);
     }

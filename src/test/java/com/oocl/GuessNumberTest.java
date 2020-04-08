@@ -53,4 +53,25 @@ public class GuessNumberTest {
         boolean result = guessNumber.isInputValid(answer);
         assertThat(result, is(true));
     }
+
+    @Test
+    public void should_only_guess_not_more_than_6_times() {
+        GuessNumber guessNumber = new GuessNumber("1234");
+
+        String result1 = guessNumber.guess("1567");
+        String result2 = guessNumber.guess("2478");
+        String result3 = guessNumber.guess("0324");
+        String result4 = guessNumber.guess("5678");
+        String result5 = guessNumber.guess("4321");
+        String result6 = guessNumber.guess("9402");
+        String result7 = guessNumber.guess("1234");
+
+        assertThat(result1, is("1A0B"));
+        assertThat(result2, is("0A2B"));
+        assertThat(result3, is("1A2B"));
+        assertThat(result4, is("0A0B"));
+        assertThat(result5, is("0A4B"));
+        assertThat(result6, is("0A2B"));
+        assertThat(result7, is("Game Over"));
+    }
 }
