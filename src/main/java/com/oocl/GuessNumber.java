@@ -50,7 +50,7 @@ public class GuessNumber {
     public boolean isInputContainsNonIntegerOrDuplicate(String input) {
         List<Character> characterList = new ArrayList<Character>();
         for (int index = 0; index < answerLength; index++) {
-            if (input.charAt(index) < '0' || input.charAt(index) > '9' || characterList.contains(input.charAt(index))) {
+            if (isNonDigit(input.charAt(index)) || characterList.contains(input.charAt(index))) {
                 return true;
             }
             characterList.add(input.charAt(index));
@@ -59,9 +59,29 @@ public class GuessNumber {
         return false;
     }
 
+    private boolean isNonDigit(Character character) {
+        return character < '0' || character > '9';
+    }
+
 
     public boolean isInputValid(String input) {
         return input.length() == answerLength && !isInputContainsNonIntegerOrDuplicate(input);
+    }
+
+    public int isNumberCorrectAndInPlace(Character character, int index) {
+        if (answer.get(character) == index)
+        {
+            return 1;
+        }
+        return 0;
+    }
+
+    public int isNumberCorrectButNotInPlace(Character character, int index) {
+        if (answer.get(character) != index)
+        {
+            return 1;
+        }
+        return 0;
     }
 
     public String guess(String input) {
@@ -69,22 +89,18 @@ public class GuessNumber {
             if (guessTrialCount == maxGuessTrialCount) {
                 return "Game Over";
             }
-            int correctNumberAndPlace = 0;
+            int correctNumberAndInPlace = 0;
             int correctNumber = 0;
             for (int index = 0; index < answerLength; index++) {
-                Character character = input.charAt(index);
-                if (answer.containsKey(character)) {
-                    if (answer.get(character) == index) {
-                        correctNumberAndPlace++;
-                    } else {
-                        correctNumber++;
-                    }
+                if (answer.containsKey(input.charAt(index))) {
+                    correctNumber += isNumberCorrectButNotInPlace(input.charAt(index), index);
+                    correctNumberAndInPlace += isNumberCorrectAndInPlace(input.charAt(index), index);
                 }
             }
-            if (correctNumberAndPlace != answerLength) {
+            if (correctNumberAndInPlace != answerLength) {
                 guessTrialCount++;
             }
-            return String.format("%dA%dB", correctNumberAndPlace, correctNumber);
+            return String.format("%dA%dB", correctNumberAndInPlace, correctNumber);
         } else {
             return "Wrong Input, Input again";
         }
