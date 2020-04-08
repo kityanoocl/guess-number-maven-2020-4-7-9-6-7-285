@@ -90,14 +90,12 @@ public class GuessNumber {
         if (isInputValid(input)) {
             int correctNumberAndInPlace = 0;
             int correctNumber = 0;
+            guessTrialCount++;
             for (int index = 0; index < answerLength; index++) {
                 if (answer.containsKey(input.charAt(index))) {
                     correctNumber += isNumberCorrectButNotInPlace(input.charAt(index), index);
                     correctNumberAndInPlace += isNumberCorrectAndInPlace(input.charAt(index), index);
                 }
-            }
-            if (correctNumberAndInPlace != answerLength) {
-                guessTrialCount++;
             }
             return String.format("%dA%dB", correctNumberAndInPlace, correctNumber);
         } else {
