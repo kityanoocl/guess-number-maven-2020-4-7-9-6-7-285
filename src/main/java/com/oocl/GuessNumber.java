@@ -67,7 +67,6 @@ public class GuessNumber {
         return character < '0' || character > '9';
     }
 
-
     public boolean isInputValid(String input) {
         return input.length() == answerLength && !isInputContainsNonIntegerOrDuplicate(input);
     }
