@@ -1,7 +1,6 @@
 package com.oocl;
 
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
 
 public class GuessNumber {
     private HashMap<Character, Integer> answer;
@@ -33,7 +32,38 @@ public class GuessNumber {
         return answerString;
     }
 
+    public boolean isUserInputContainsNonInteger(String input) {
+        for (int index = 0; index < answerLength; index++) {
+            if (input.charAt(index) < '0' || input.charAt(index) > '9') {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public boolean isUserInputHasDuplicate(String input) {
+        List<Character> characterList = new ArrayList<Character>();
+        for (int index = 0; index < answerLength; index++) {
+            if (characterList.contains(input.charAt(index))) {
+                return false;
+            }
+            characterList.add(input.charAt(index));
+        }
+        return true;
+    }
+
+    public boolean isUserInputValid(String input) {
+        if (input.length() != answerLength || isUserInputContainsNonInteger(input) || isUserInputHasDuplicate(input)) {
+            return false;
+        }
+        return true;
+    }
+
     public String guess(String input) {
+        if (!isUserInputValid(input)) {
+            return String.format("Wrong Input, Input again");
+        }
         int correctNumberAndPlace = 0;
         int correctNumber = 0;
         for (int index = 0; index < answerLength; index++) {

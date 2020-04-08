@@ -33,4 +33,15 @@ public class GuessNumberTest {
         assertThat(result5, is("0A4B"));
         assertThat(result6, is("4A0B"));
     }
+
+    @Test
+    public void should_check_user_input_valid() {
+        GuessNumber guessNumber = new GuessNumber("1234");
+
+        String result1 = guessNumber.guess("1123");
+        String result2 = guessNumber.guess("12");
+
+        assertThat(result1, is("Wrong Input, Input again"));
+        assertThat(result2, is("Wrong Input, Input again"));
+    }
 }
