@@ -1,30 +1,45 @@
 package com.oocl;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
+
+import java.util.HashMap;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 public class GuessNumberTest {
+    GuessNumber game;
+    @Before
+    public void setUp() throws Exception {
+        // before method
+        HashMap<Character, Integer> answer = new HashMap<Character, Integer>();
+        answer.put('1', 1);
+        answer.put('2', 2);
+        answer.put('3', 3);
+        answer.put('4', 4);
+        AnswerGenerator answerGenerator = Mockito.mock(AnswerGenerator.class);
+        Mockito.when(answerGenerator.generate()).thenReturn(answer);
+        game = new GuessNumber(answerGenerator);
+    }
+
     @Test
     public void should_map_answer_string_to_has_map() {
-        GuessNumber guessNumber = new GuessNumber("1234");
-
-        String result = guessNumber.getAnswer();
+        String result = game.getAnswer();
 
         assertThat(result, is("1234"));
     }
 
     @Test
     public void should_check_input_with_answer() {
-        GuessNumber guessNumber = new GuessNumber("1234");
 
-        String result1 = guessNumber.guess("1567");
-        String result2 = guessNumber.guess("2478");
-        String result3 = guessNumber.guess("0324");
-        String result4 = guessNumber.guess("5678");
-        String result5 = guessNumber.guess("4321");
-        String result6 = guessNumber.guess("1234");
+        String result1 = game.guess("1567");
+        String result2 = game.guess("2478");
+        String result3 = game.guess("0324");
+        String result4 = game.guess("5678");
+        String result5 = game.guess("4321");
+        String result6 = game.guess("1234");
 
         assertThat(result1, is("1A0B"));
         assertThat(result2, is("0A2B"));
@@ -36,10 +51,9 @@ public class GuessNumberTest {
 
     @Test
     public void should_check_user_input_valid() {
-        GuessNumber guessNumber = new GuessNumber("1234");
 
-        String result1 = guessNumber.guess("1123");
-        String result2 = guessNumber.guess("12");
+        String result1 = game.guess("1123");
+        String result2 = game.guess("12");
 
         assertThat(result1, is("Wrong Input, Input again"));
         assertThat(result2, is("Wrong Input, Input again"));
@@ -47,24 +61,22 @@ public class GuessNumberTest {
 
     @Test
     public void should_generate_random_for_answer() {
-        GuessNumber guessNumber = new GuessNumber();
 
-        String answer = guessNumber.getAnswer();
-        boolean result = guessNumber.isInputValid(answer);
+        String answer = game.getAnswer();
+        boolean result = game.isInputValid(answer);
         assertThat(result, is(true));
     }
 
     @Test
     public void should_only_guess_not_more_than_6_times() {
-        GuessNumber guessNumber = new GuessNumber("1234");
 
-        String result1 = guessNumber.guess("1567");
-        String result2 = guessNumber.guess("2478");
-        String result3 = guessNumber.guess("0324");
-        String result4 = guessNumber.guess("5678");
-        String result5 = guessNumber.guess("4321");
-        String result6 = guessNumber.guess("9402");
-        String result7 = guessNumber.guess("1234");
+        String result1 = game.guess("1567");
+        String result2 = game.guess("2478");
+        String result3 = game.guess("0324");
+        String result4 = game.guess("5678");
+        String result5 = game.guess("4321");
+        String result6 = game.guess("9402");
+        String result7 = game.guess("1234");
 
         assertThat(result1, is("1A0B"));
         assertThat(result2, is("0A2B"));
