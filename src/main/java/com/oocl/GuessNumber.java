@@ -7,7 +7,6 @@ import java.util.*;
 
 public class GuessNumber implements Game {
     private HashMap<Character, Integer> answer;
-    final int MAX_NUMBER = 9999;
     final int MAX_GUESS_TRIAL_COUNT = 6;
     final int ANSWER_LENGTH = 4;
     final String DEFAULT_RESULT_STRING = "0A0B";
@@ -20,7 +19,7 @@ public class GuessNumber implements Game {
     final String WELCOME_MESSAGE = "Welcome to Guess Number!\nGame Start!\n";
     private int guessTrialCount = 0;
     private String result = DEFAULT_RESULT_STRING;
-    final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+    final ConsoleInputReader consoleInputReader = new ConsoleInputReader();
 
     public GuessNumber(AnswerGenerator answerGenerator) {
         answer = answerGenerator.generate();
@@ -36,11 +35,11 @@ public class GuessNumber implements Game {
 
     public boolean isInputContainsNonIntegerOrDuplicate(String input) {
         List<Character> characterList = new ArrayList<Character>();
-        for (int index = 0; index < ANSWER_LENGTH; index++) {
-            if (isNonDigit(input.charAt(index)) || characterList.contains(input.charAt(index))) {
+        for (Character character : input.toCharArray()) {
+            if (isNonDigit(character) || characterList.contains(character)) {
                 return true;
             }
-            characterList.add(input.charAt(index));
+            characterList.add(character);
         }
 
         return false;
@@ -56,17 +55,11 @@ public class GuessNumber implements Game {
     }
 
     public boolean isNumberCorrectAndInPlace(Character character, int index) {
-        if (answer.containsKey(character) && answer.get(character) == index) {
-            return true;
-        }
-        return false;
+        return answer.containsKey(character) && answer.get(character) == index;
     }
 
     public boolean isNumberCorrectButNotInPlace(Character character, int index) {
-        if (answer.containsKey(character) && answer.get(character) != index) {
-            return true;
-        }
-        return false;
+        return answer.containsKey(character) && answer.get(character) != index;
     }
 
     public String guess(String input) {
@@ -97,7 +90,7 @@ public class GuessNumber implements Game {
 
         while (!isWin() && !isGameOver()) {
             System.out.print(String.format(INPUT_PROMPT, MAX_GUESS_TRIAL_COUNT - guessTrialCount));
-            result = guess(reader.readLine());
+            result = guess(consoleInputReader.getInput());
             System.out.println(result);
         }
 
