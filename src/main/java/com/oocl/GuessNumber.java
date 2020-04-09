@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.*;
 
 public class GuessNumber implements Game {
-    private HashMap<Character, Integer> answer;
     final int MAX_GUESS_TRIAL_COUNT = 6;
     final int ANSWER_LENGTH = 4;
     final String DEFAULT_RESULT_STRING = "0A0B";
@@ -15,9 +14,10 @@ public class GuessNumber implements Game {
     final String RESULT_FORMAT_STRING = "%dA%dB";
     final String INPUT_PROMPT = "You got %d chance(s) to guess: ";
     final String WELCOME_MESSAGE = "Welcome to Guess Number!\nGame Start!\n";
-    private int guessTrialCount = 0;
-    private String result = DEFAULT_RESULT_STRING;
     final ConsoleInputReader consoleInputReader = new ConsoleInputReader();
+    private int guessTrialCount = 0;
+    private HashMap<Character, Integer> answer;
+    private String result = DEFAULT_RESULT_STRING;
 
     public GuessNumber(AnswerGenerator answerGenerator) {
         answer = answerGenerator.generate();
