@@ -32,12 +32,10 @@ public class GuessNumber implements Game {
     }
 
     public boolean isInputContainsNonIntegerOrDuplicate(String input) {
-        List<Character> characterList = new ArrayList<Character>();
         for (Character character : input.toCharArray()) {
-            if (!isDigit(character) || characterList.contains(character)) {
+            if (!isDigit(character) || input.lastIndexOf(character) != input.indexOf(character)) {
                 return true;
             }
-            characterList.add(character);
         }
         return false;
     }
