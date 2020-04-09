@@ -39,7 +39,6 @@ public class GuessNumber implements Game {
             }
             characterList.add(character);
         }
-
         return false;
     }
 
@@ -68,9 +67,9 @@ public class GuessNumber implements Game {
         int correctNumberAndInPlace = 0;
         int correctNumber = 0;
         guessTrialCount++;
-        for (int index = 0; index < ANSWER_LENGTH; index++) {
-            correctNumber += (isNumberCorrectButNotInPlace(input.charAt(index), index)) ? 1 : 0;
-            correctNumberAndInPlace += (isNumberCorrectAndInPlace(input.charAt(index), index)) ? 1 : 0;
+        for (Character character : input.toCharArray()) {
+            correctNumber += (isNumberCorrectButNotInPlace(character, input.indexOf(character))) ? 1 : 0;
+            correctNumberAndInPlace += (isNumberCorrectAndInPlace(character, input.indexOf(character))) ? 1 : 0;
         }
         return String.format(RESULT_FORMAT_STRING, correctNumberAndInPlace, correctNumber);
     }
