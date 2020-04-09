@@ -1,8 +1,6 @@
 package com.oocl;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.*;
 
 public class GuessNumber implements Game {
@@ -36,7 +34,7 @@ public class GuessNumber implements Game {
     public boolean isInputContainsNonIntegerOrDuplicate(String input) {
         List<Character> characterList = new ArrayList<Character>();
         for (Character character : input.toCharArray()) {
-            if (isNonDigit(character) || characterList.contains(character)) {
+            if (!isDigit(character) || characterList.contains(character)) {
                 return true;
             }
             characterList.add(character);
@@ -45,7 +43,7 @@ public class GuessNumber implements Game {
         return false;
     }
 
-    private boolean isNonDigit(Character character) {
+    private boolean isDigit(Character character) {
         return Character.isDigit(character);
     }
 
