@@ -64,7 +64,7 @@ public class GuessNumberTest {
     public void should_generate_random_for_answer() {
 
         String answer = game.getAnswer();
-        boolean result = game.isInputValid(answer);
+        boolean result = game.isGuessStringValid(answer);
         assertThat(result, is(true));
     }
 }

@@ -27,7 +27,6 @@ public class GuessNumber implements Game {
     public String getAnswer() {
         StringJoiner answerString = new StringJoiner(ANSWER_STRING_DELIMITER);
         answer.keySet().forEach(character -> answerString.add(character.toString()));
-
         return answerString.toString();
     }
 
@@ -43,7 +42,7 @@ public class GuessNumber implements Game {
         return Character.isDigit(character);
     }
 
-    public boolean isInputValid(String guessString) {
+    public boolean isGuessStringValid(String guessString) {
         boolean isMatchLength = guessString.length() == ANSWER_LENGTH;
         return isMatchLength && isGuessStringOnlyContainsInteger(guessString) && isGuessStringHasNoDuplicate(guessString);
     }
@@ -57,18 +56,15 @@ public class GuessNumber implements Game {
     }
 
     public String guess(String guessString) {
-        if (!isInputValid(guessString)) {
+        if (!isGuessStringValid(guessString)) {
             return WRONG_INPUT_MESSAGE;
         }
 
-        int correctNumberAndInPlace = 0;
-        int correctNumber = 0;
         guessTrialCount++;
-        for (Character character : guessString.toCharArray()) {
-            correctNumber += (isNumberCorrectButNotInPlace(character, guessString.indexOf(character))) ? 1 : 0;
-            correctNumberAndInPlace += (isNumberCorrectAndInPlace(character, guessString.indexOf(character))) ? 1 : 0;
-        }
-        return String.format(RESULT_FORMAT_STRING, correctNumberAndInPlace, correctNumber);
+        int correctNumberAndNotInPlace = guessString.chars().map(character -> (isNumberCorrectButNotInPlace((char) character, guessString.indexOf(character))) ? 1 : 0).sum();
+        int correctNumberAndInPlace = guessString.chars().map(character -> (isNumberCorrectAndInPlace((char) character, guessString.indexOf(character))) ? 1 : 0).sum();
+
+        return String.format(RESULT_FORMAT_STRING, correctNumberAndInPlace, correctNumberAndNotInPlace);
     }
 
     public boolean isWin() {
