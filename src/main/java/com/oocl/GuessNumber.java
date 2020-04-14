@@ -2,6 +2,7 @@ package com.oocl;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GuessNumber implements Game {
     private final int MAX_GUESS_TRIAL_COUNT = 6;
