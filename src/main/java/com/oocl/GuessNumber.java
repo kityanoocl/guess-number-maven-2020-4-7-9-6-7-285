@@ -15,6 +15,9 @@ public class GuessNumber implements Game {
     private static final String RESULT_FORMAT_STRING = "%dA%dB";
     private static final String INPUT_PROMPT = "You got %d chance(s) to guess: ";
     private static final String WELCOME_MESSAGE = "Welcome to Guess Number!\nGame Start!\n";
+    public static final int CORRECT_NUMBER_NOT_IN_PLACE_POINT = 1;
+    public static final int CORRECT_NUMBER_IN_PLACE_POINT = 1;
+    public static final int INCORRECT_POINT = 0;
     private final ConsoleInputReader consoleInputReader = new ConsoleInputReader();
     private int guessTrialCount = 0;
     private HashMap<Character, Integer> answer;
@@ -51,8 +54,22 @@ public class GuessNumber implements Game {
         return answer.containsKey(character) && answer.get(character) == index;
     }
 
+    public int getPointForNumberCorrectAndInPlace(Character character, int index) {
+        if (isNumberCorrectAndInPlace(character, index)) {
+            return CORRECT_NUMBER_IN_PLACE_POINT;
+        }
+        return INCORRECT_POINT;
+    }
+
     public boolean isNumberCorrectButNotInPlace(Character character, int index) {
         return answer.containsKey(character) && answer.get(character) != index;
+    }
+
+    public int getPointForNumberCorrectAndNotInPlace(Character character, int index) {
+        if (isNumberCorrectButNotInPlace(character, index)) {
+            return CORRECT_NUMBER_NOT_IN_PLACE_POINT;
+        }
+        return INCORRECT_POINT;
     }
 
     public String guess(String guessString) {
@@ -61,8 +78,8 @@ public class GuessNumber implements Game {
         }
 
         guessTrialCount++;
-        int correctNumberAndNotInPlace = guessString.chars().map(character -> (isNumberCorrectButNotInPlace((char) character, guessString.indexOf(character))) ? 1 : 0).sum();
-        int correctNumberAndInPlace = guessString.chars().map(character -> (isNumberCorrectAndInPlace((char) character, guessString.indexOf(character))) ? 1 : 0).sum();
+        int correctNumberAndNotInPlace = guessString.chars().map(character -> getPointForNumberCorrectAndNotInPlace((char) character, guessString.indexOf(character))).sum();
+        int correctNumberAndInPlace = guessString.chars().map(character -> getPointForNumberCorrectAndInPlace((char) character, guessString.indexOf(character))).sum();
 
         return String.format(RESULT_FORMAT_STRING, correctNumberAndInPlace, correctNumberAndNotInPlace);
     }
