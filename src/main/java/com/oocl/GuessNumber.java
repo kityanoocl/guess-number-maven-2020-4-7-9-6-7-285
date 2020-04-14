@@ -2,19 +2,19 @@ package com.oocl;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class GuessNumber implements Game {
-    private final int MAX_GUESS_TRIAL_COUNT = 6;
-    private final int ANSWER_LENGTH = 4;
-    private final String DEFAULT_RESULT_STRING = "0A0B";
-    private final String WINNING_RESULT_STRING = "4A0B";
-    private final String WINNING_MESSAGE = "Congratulation! You win!";
-    private final String LOSE_MESSAGE = "Game Over! The answer is %s";
-    private final String WRONG_INPUT_MESSAGE = "Wrong Input, Input again";
-    private final String RESULT_FORMAT_STRING = "%dA%dB";
-    private final String INPUT_PROMPT = "You got %d chance(s) to guess: ";
-    private final String WELCOME_MESSAGE = "Welcome to Guess Number!\nGame Start!\n";
+    public static final String ANSWER_STRING_DELIMITER = "";
+    private static final int MAX_GUESS_TRIAL_COUNT = 6;
+    private static final int ANSWER_LENGTH = 4;
+    private static final String DEFAULT_RESULT_STRING = "0A0B";
+    private static final String WINNING_RESULT_STRING = "4A0B";
+    private static final String WINNING_MESSAGE = "Congratulation! You win!";
+    private static final String LOSE_MESSAGE = "Game Over! The answer is %s";
+    private static final String WRONG_INPUT_MESSAGE = "Wrong Input, Input again";
+    private static final String RESULT_FORMAT_STRING = "%dA%dB";
+    private static final String INPUT_PROMPT = "You got %d chance(s) to guess: ";
+    private static final String WELCOME_MESSAGE = "Welcome to Guess Number!\nGame Start!\n";
     private final ConsoleInputReader consoleInputReader = new ConsoleInputReader();
     private int guessTrialCount = 0;
     private HashMap<Character, Integer> answer;
@@ -25,29 +25,27 @@ public class GuessNumber implements Game {
     }
 
     public String getAnswer() {
-        String answerString = "";
-        for (Character character : answer.keySet()) {
-            answerString += character;
-        }
-        return answerString;
+        StringJoiner answerString = new StringJoiner(ANSWER_STRING_DELIMITER);
+        answer.keySet().forEach(character -> answerString.add(character.toString()));
+
+        return answerString.toString();
     }
 
-    public boolean isInputContainsNonIntegerOrDuplicate(String input) {
-        for (Character character : input.toCharArray()) {
-            if (!isDigit(character) || input.lastIndexOf(character) != input.indexOf(character)) {
-                return true;
-            }
-        }
-        return false;
+    public boolean isGuessStringOnlyContainsInteger(String guessString) {
+        return guessString.chars().allMatch(character -> isDigit((char) character));
+    }
+
+    public boolean isGuessStringHasNoDuplicate(String guessString) {
+        return guessString.chars().allMatch(character -> guessString.lastIndexOf(character) == guessString.indexOf(character));
     }
 
     private boolean isDigit(Character character) {
         return Character.isDigit(character);
     }
 
-    public boolean isInputValid(String input) {
-        boolean isMatchLength = input.length() == ANSWER_LENGTH;
-        return isMatchLength && !isInputContainsNonIntegerOrDuplicate(input);
+    public boolean isInputValid(String guessString) {
+        boolean isMatchLength = guessString.length() == ANSWER_LENGTH;
+        return isMatchLength && isGuessStringOnlyContainsInteger(guessString) && isGuessStringHasNoDuplicate(guessString);
     }
 
     public boolean isNumberCorrectAndInPlace(Character character, int index) {
@@ -58,17 +56,17 @@ public class GuessNumber implements Game {
         return answer.containsKey(character) && answer.get(character) != index;
     }
 
-    public String guess(String input) {
-        if (!isInputValid(input)) {
+    public String guess(String guessString) {
+        if (!isInputValid(guessString)) {
             return WRONG_INPUT_MESSAGE;
         }
 
         int correctNumberAndInPlace = 0;
         int correctNumber = 0;
         guessTrialCount++;
-        for (Character character : input.toCharArray()) {
-            correctNumber += (isNumberCorrectButNotInPlace(character, input.indexOf(character))) ? 1 : 0;
-            correctNumberAndInPlace += (isNumberCorrectAndInPlace(character, input.indexOf(character))) ? 1 : 0;
+        for (Character character : guessString.toCharArray()) {
+            correctNumber += (isNumberCorrectButNotInPlace(character, guessString.indexOf(character))) ? 1 : 0;
+            correctNumberAndInPlace += (isNumberCorrectAndInPlace(character, guessString.indexOf(character))) ? 1 : 0;
         }
         return String.format(RESULT_FORMAT_STRING, correctNumberAndInPlace, correctNumber);
     }
