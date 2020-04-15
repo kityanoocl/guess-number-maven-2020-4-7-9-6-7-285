@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class GuessNumber implements Game {
-    public static final String ANSWER_STRING_DELIMITER = "";
+    private static final String ANSWER_STRING_DELIMITER = "";
     private static final int MAX_GUESS_TRIAL_COUNT = 6;
     private static final int ANSWER_LENGTH = 4;
     private static final String DEFAULT_RESULT_STRING = "0A0B";
@@ -15,12 +15,12 @@ public class GuessNumber implements Game {
     private static final String RESULT_FORMAT_STRING = "%dA%dB";
     private static final String INPUT_PROMPT = "You got %d chance(s) to guess: ";
     private static final String WELCOME_MESSAGE = "Welcome to Guess Number!\nGame Start!\n";
-    public static final int CORRECT_NUMBER_NOT_IN_PLACE_POINT = 1;
-    public static final int CORRECT_NUMBER_IN_PLACE_POINT = 1;
-    public static final int INCORRECT_POINT = 0;
+    private static final int CORRECT_NUMBER_NOT_IN_PLACE_POINT = 1;
+    private static final int CORRECT_NUMBER_IN_PLACE_POINT = 1;
+    private static final int INCORRECT_POINT = 0;
     private final ConsoleInputReader consoleInputReader = new ConsoleInputReader();
     private int guessTrialCount = 0;
-    private HashMap<Character, Integer> answer;
+    private final HashMap<Character, Integer> answer;
     private String result = DEFAULT_RESULT_STRING;
 
     public GuessNumber(AnswerGenerator answerGenerator) {
@@ -33,11 +33,11 @@ public class GuessNumber implements Game {
         return answerString.toString();
     }
 
-    public boolean isGuessStringOnlyContainsInteger(String guessString) {
+    private boolean isGuessStringOnlyContainsInteger(String guessString) {
         return guessString.chars().allMatch(character -> isDigit((char) character));
     }
 
-    public boolean isGuessStringHasNoDuplicate(String guessString) {
+    private boolean isGuessStringHasNoDuplicate(String guessString) {
         return guessString.chars().allMatch(character -> guessString.lastIndexOf(character) == guessString.indexOf(character));
     }
 
@@ -45,34 +45,34 @@ public class GuessNumber implements Game {
         return Character.isDigit(character);
     }
 
-    public boolean isGuessStringValid(String guessString) {
+    private boolean isGuessStringValid(String guessString) {
         boolean isMatchLength = guessString.length() == ANSWER_LENGTH;
         return isMatchLength && isGuessStringOnlyContainsInteger(guessString) && isGuessStringHasNoDuplicate(guessString);
     }
 
-    public boolean isNumberCorrectAndInPlace(Character character, int index) {
+    private boolean isNumberCorrectAndInPlace(Character character, int index) {
         return answer.containsKey(character) && answer.get(character) == index;
     }
 
-    public int getPointForNumberCorrectAndInPlace(Character character, int index) {
+    private int getPointForNumberCorrectAndInPlace(Character character, int index) {
         if (isNumberCorrectAndInPlace(character, index)) {
             return CORRECT_NUMBER_IN_PLACE_POINT;
         }
         return INCORRECT_POINT;
     }
 
-    public boolean isNumberCorrectButNotInPlace(Character character, int index) {
+    private boolean isNumberCorrectButNotInPlace(Character character, int index) {
         return answer.containsKey(character) && answer.get(character) != index;
     }
 
-    public int getPointForNumberCorrectAndNotInPlace(Character character, int index) {
+    private int getPointForNumberCorrectAndNotInPlace(Character character, int index) {
         if (isNumberCorrectButNotInPlace(character, index)) {
             return CORRECT_NUMBER_NOT_IN_PLACE_POINT;
         }
         return INCORRECT_POINT;
     }
 
-    public String guess(String guessString) {
+    private String guess(String guessString) {
         if (!isGuessStringValid(guessString)) {
             return WRONG_INPUT_MESSAGE;
         }
